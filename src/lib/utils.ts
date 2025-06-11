@@ -32,6 +32,26 @@ export function throttle<T extends (...args: any[]) => any>(
   };
 }
 
+export function trimLeft(str: string, charsToTrim = " ") {
+  let start = 0;
+  while (start < str.length && charsToTrim.includes(str[start])) {
+    start++;
+  }
+  return str.slice(start);
+}
+
+export function trimRight(str: string, charsToTrim = " ") {
+  let end = str.length - 1;
+  while (end >= 0 && charsToTrim.includes(str[end])) {
+    end--;
+  }
+  return str.slice(0, end + 1);
+}
+
+export function trim(str: string, charsToTrim = " ") {
+  return trimLeft(trimRight(str, charsToTrim), charsToTrim);
+}
+
 export const formatErrorMessage = (error: any, message?: string): string => {
   return (
     error.response?.data?.message ??
