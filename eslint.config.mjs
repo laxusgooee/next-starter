@@ -16,11 +16,12 @@ const eslintConfig = [
   ...pluginQuery.configs["flat/recommended"],
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    ignores: [
-      "node_modules/",
-      "dist/"
-    ]
-  }
+    rules: {
+      "no-console": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
+    },
+    ignores: ["node_modules/", "dist/"],
+  },
 ];
 
 export default eslintConfig;
