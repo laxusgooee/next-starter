@@ -1,5 +1,7 @@
+import AuthProvider from "@/providers/AuthProvider";
 import QueryProvider from "@/providers/QueryProvider";
-import { ThemeProvider } from "@/providers/ThemeProvider";
+import ThemeProvider from "@/providers/ThemeProvider";
+import ToastProvider from "@/providers/ToastProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -31,11 +33,15 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <ToastProvider>
+              <AuthProvider>{children}</AuthProvider>
+            </ToastProvider>
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
