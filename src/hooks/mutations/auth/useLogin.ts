@@ -11,7 +11,7 @@ type LoginInputType = {
   password: string;
 };
 
-const login = async (
+const mutationFn = async (
   input: LoginInputType,
 ): Promise<AxiosResponse<LoginResponseType>> => {
   return await axios.post(`/api/auth/login`, input, {
@@ -25,7 +25,7 @@ const useLogin = () => {
     AxiosError,
     LoginInputType
   >({
-    mutationFn: login,
+    mutationFn,
   });
 };
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { setCookieAction } from "@/app/actions";
 import {
   Button,
   Form,
@@ -12,11 +11,8 @@ import {
   Input,
 } from "@/components/ui";
 import useLogin from "@/hooks/mutations/auth/useLogin";
-import { ACCESS_TOKEN_KEYWORD } from "@/lib/constants";
-import { User } from "@/lib/types";
 import { formatErrorMessage } from "@/lib/utils";
 import { useAuthSession } from "@/providers/AuthProvider";
-import { decodeUser } from "@/store/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -55,15 +51,7 @@ export default function LoginPage() {
         provider: "email",
       });
 
-      const user = decodeUser(res.data.token);
-
-      if (!user) {
-        throw new Error("Invalid user");
-      }
-
-      await setCookieAction(ACCESS_TOKEN_KEYWORD, res.data.token);
-
-      signIn(user as User);
+      await signIn(res.data.token);
 
       toast.success("Login successful");
 

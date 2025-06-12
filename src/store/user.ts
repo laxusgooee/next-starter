@@ -1,9 +1,8 @@
 import { User } from "@/lib/types";
-import { jwtDecode, JwtPayload } from "jwt-decode";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { IWithClear, IWithHydration } from "./utils";
+import { IWithClear, IWithHydration } from "./common";
 
 export interface UserState extends IWithHydration, IWithClear {
   user: User | null;
@@ -11,20 +10,6 @@ export interface UserState extends IWithHydration, IWithClear {
 
 export interface UserActions {
   setUser: (user: User) => void;
-}
-
-export function decodeUser(token: string): Partial<User> | undefined {
-  const { sub, username, first_name, last_name, email } = jwtDecode<
-    JwtPayload & Omit<User, "id">
-  >(token);
-
-  return {
-    id: sub as string,
-    username,
-    email,
-    first_name,
-    last_name,
-  };
 }
 
 export const useUserStore = create<UserState & UserActions>()(
