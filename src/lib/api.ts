@@ -1,10 +1,10 @@
 import { getCookieAction } from "@/app/actions";
 import axios from "axios";
 import { redirect } from "next/navigation";
-import { ACCESS_TOKEN_KEYWORD, API_URL } from "./constants";
+import { ACCESS_TOKEN_KEYWORD } from "./constants";
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: "/api",
   headers: {
     "Content-Type": "application/json",
   },

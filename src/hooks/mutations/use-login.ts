@@ -1,12 +1,13 @@
+import api from "@/lib/api";
+import { User } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 
 type LoginResponseType = {
-  token: string;
+  user: User;
 };
 
 type LoginInputType = {
-  provider: "email";
   email: string;
   password: string;
 };
@@ -14,7 +15,7 @@ type LoginInputType = {
 const mutationFn = async (
   input: LoginInputType,
 ): Promise<AxiosResponse<LoginResponseType>> => {
-  return await axios.post(`/api/auth/login`, input, {
+  return await api.post(`/auth/login`, input, {
     withCredentials: true,
   });
 };

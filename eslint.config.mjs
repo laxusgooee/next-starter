@@ -18,7 +18,18 @@ const eslintConfig = [
   {
     rules: {
       "no-console": "warn",
+      "no-unused-vars": "off",
       "@typescript-eslint/no-explicit-any": "warn",
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": [
+        "warn",
+        {
+          "vars": "all",
+          "varsIgnorePattern": "^_",
+          "args": "after-used",
+          "argsIgnorePattern": "^_"
+        }
+      ]
     },
     ignores: ["node_modules/", "dist/"],
   },

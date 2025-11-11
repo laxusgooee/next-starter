@@ -4,20 +4,21 @@ import moment from "moment";
 class UserModel {
   constructor(
     public id: ID,
+    public email: string,
     public username: string,
-    public first_name?: string,
-    public last_name?: string,
-    public email?: string,
+    public name?: string,
     public phone?: string,
-    public birth_date?: string,
+    public birthDate?: string,
   ) {}
 
   get initials(): string {
-    return `${this.first_name?.[0]}${this.last_name?.[0]}`.trim();
-  }
-
-  get name(): string {
-    return (this.first_name + " " + this.last_name).trim();
+    return (
+      this.name
+        ?.split(" ")
+        .map((e) => e?.[0])
+        .join(" ")
+        .trim() ?? ""
+    );
   }
 
   get avatar(): string {
@@ -25,7 +26,7 @@ class UserModel {
   }
 
   get birthDay(): moment.Moment | null | undefined {
-    return this.birth_date ? moment(this.birth_date) : null;
+    return this.birthDate ? moment(this.birthDate) : null;
   }
 
   get isVerified(): boolean | undefined {
@@ -35,27 +36,25 @@ class UserModel {
   /**
    * toJson
    */
-  public toJson(): User {
+  public toJson(): Partial<User> {
     return {
       id: this.id,
-      username: this.username,
-      first_name: this.first_name ?? "",
-      last_name: this.last_name ?? "",
       email: this.email,
+      username: this.username,
+      name: this.name ?? "",
       phone: this.phone,
-      birth_date: this.birth_date,
+      birthDate: this.birthDate,
     };
   }
 
   static fromJson(user: User): UserModel {
     const data = new UserModel(
       user.id,
-      user.username,
-      user.first_name,
-      user.last_name,
       user.email,
+      user.username,
+      user.name,
       user.phone,
-      user.birth_date,
+      user.birthDate,
     );
 
     return data;

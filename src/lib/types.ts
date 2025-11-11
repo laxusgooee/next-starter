@@ -1,12 +1,14 @@
-export type ID = string | number;
+import { User as BaseUser } from "better-auth";
 
-export type User = {
+export type ID = string;
+
+export type User = BaseUser & {
   id: ID;
   username: string;
-  first_name: string;
-  last_name: string;
-  email?: string;
   phone?: string;
   image?: string;
-  birth_date?: string;
+  birthDate?: string;
+  emailVerified?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 };

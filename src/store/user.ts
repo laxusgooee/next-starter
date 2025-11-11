@@ -2,7 +2,7 @@ import { User } from "@/lib/types";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { IWithClear, IWithHydration } from "./common";
+import { IWithClear, IWithHydration } from "./_types";
 
 export interface UserState extends IWithHydration, IWithClear {
   user: User | null;

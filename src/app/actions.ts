@@ -3,29 +3,39 @@
 import { deleteCookie, getCookie, setCookie } from "cookies-next/server";
 import { cookies } from "next/headers";
 
-export async function setCookieAction(k: string, v: string) {
+const config = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "strict",
+};
+
+export async function setCookieAction(
+  k: string,
+  v: string,
+  _opts?: Record<string, unknown>,
+) {
   return await setCookie(k, v, {
     cookies,
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
+    ...config,
   });
 }
 
-export async function getCookieAction(k: string) {
+export async function getCookieAction(
+  k: string,
+  _opts?: Record<string, unknown>,
+) {
   return await getCookie(k, {
     cookies,
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
+    ...config,
   });
 }
 
-export async function deleteCookieAction(k: string) {
+export async function deleteCookieAction(
+  k: string,
+  _opts?: Record<string, unknown>,
+) {
   return await deleteCookie(k, {
     cookies,
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
+    ...config,
   });
 }

@@ -10,7 +10,7 @@ import {
   FormMessage,
   Input,
 } from "@/components/ui";
-import useLogin from "@/hooks/mutations/auth/useLogin";
+import useLogin from "@/hooks/mutations/use-login";
 import { formatErrorMessage } from "@/lib/utils";
 import { useAuthSession } from "@/providers/AuthProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,12 +46,9 @@ export default function LoginPage() {
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
-      const res = await loginMuntation.mutateAsync({
-        ...data,
-        provider: "email",
-      });
+      const res = await loginMuntation.mutateAsync(data);
 
-      await signIn(res.data.token);
+      await signIn(res.data.user);
 
       toast.success("Login successful");
 

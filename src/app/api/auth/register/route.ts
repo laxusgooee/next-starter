@@ -5,13 +5,15 @@ import { formatErrorMessage } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const { email, password } = await request.json();
+  const { username, email, password } = await request.json();
 
   try {
-    const { token, user } = await auth.api.signInEmail({
+    const { token, user } = await auth.api.signUpEmail({
       body: {
         email,
         password,
+        username,
+        name: "",
       },
     });
 
@@ -19,11 +21,7 @@ export async function POST(request: Request) {
       throw new Error("User not found");
     }
 
-    await setCookieAction(ACCESS_TOKEN_KEYWORD, token);
-
-    // if (refresh_token) {
-    //   setCookieAction(REFRESH_TOKEN_KEYWORD, refresh_token);
-    // }
+    setCookieAction(ACCESS_TOKEN_KEYWORD, token);
 
     return NextResponse.json(
       {
@@ -34,7 +32,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { message: formatErrorMessage(error, "An unexpected error occurred.") },
-      { status: 500 },
+      { status: 400 },
     );
   }
 }

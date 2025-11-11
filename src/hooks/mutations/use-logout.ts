@@ -1,10 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
+
+import api from "@/lib/api";
 
 type LogoutResponseType = null;
 
 const mutationFn = async (): Promise<AxiosResponse<LogoutResponseType>> => {
-  return await axios.post(`/api/auth/logout`, null, {
+  return await api.post(`/auth/logout`, null, {
     withCredentials: true,
   });
 };

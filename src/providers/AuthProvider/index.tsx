@@ -1,17 +1,27 @@
 "use client";
 
-import { deleteCookieAction, setCookieAction } from "@/app/actions";
-import useGetDetails from "@/hooks/queries/useGetDetails";
-import { ACCESS_TOKEN_KEYWORD } from "@/lib/constants";
+import useGetDetails from "@/hooks/queries/use-get-details";
 import { User } from "@/lib/types";
-import UserModel from "@/models/user";
+import UserModel from "@/providers/AuthProvider/models/user";
 import { useUserStore } from "@/store/user";
 import { useQueryClient } from "@tanstack/react-query";
-import { jwtDecode, JwtPayload } from "jwt-decode";
-import { createContext, ReactNode, useContext, useEffect } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import LoginPopup from "./components/login-popup";
 
 interface AuthContextType {
-  signIn: (accessToken: string) => void;
+  gaurd: (
+    callback: (args?: any) => void,
+    opts?: {
+      checkVerification?: boolean;
+    },
+  ) => void;
+  signIn: (user: User) => void;
   signOut: () => void;
   isLoading: boolean;
   user: UserModel | null;
@@ -22,21 +32,8 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   signIn: () => null,
   signOut: () => null,
+  gaurd: () => null,
 });
-
-export function decodeUser(token: string): Partial<User> | undefined {
-  const { sub, username, first_name, last_name, email } = jwtDecode<
-    JwtPayload & Omit<User, "id">
-  >(token);
-
-  return {
-    id: sub as string,
-    username,
-    email,
-    first_name,
-    last_name,
-  };
-}
 
 export function useAuthSession() {
   return useContext(AuthContext);
@@ -46,6 +43,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
 
   const { _hydrated, user, setUser, clear: clearUser } = useUserStore();
+
+  const [openAuthModal, setOpenAuthModal] = useState(false);
 
   const getDetailsQuery = useGetDetails({
     enabled: !!user && _hydrated,
@@ -58,27 +57,28 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         ...getDetailsQuery.data.data,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getDetailsQuery.data?.data]);
 
-  const signIn = async (accessToken: string) => {
-    const user = decodeUser(accessToken);
-
-    if (!user) {
-      throw new Error("Invalid user");
-    }
-
-    await setCookieAction(ACCESS_TOKEN_KEYWORD, accessToken);
-
-    await setUser(user as User);
+  const signIn = async (user: User) => {
+    setUser(user);
   };
 
   const signOut = async () => {
     // clear queries
     queryClient.clear();
 
-    deleteCookieAction(ACCESS_TOKEN_KEYWORD);
+    // clear stores
 
     clearUser();
+  };
+
+  const guard: AuthContextType["gaurd"] = (callback) => {
+    if (!user) {
+      return setOpenAuthModal(true);
+    }
+
+    callback();
   };
 
   return (
@@ -86,11 +86,14 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user: user ? UserModel.fromJson(user) : null,
         isLoading: !_hydrated,
+        gaurd: guard,
         signIn: signIn,
         signOut: signOut,
       }}
     >
       {children}
+
+      {openAuthModal && <LoginPopup onOpenChange={setOpenAuthModal} />}
     </AuthContext.Provider>
   );
 }
