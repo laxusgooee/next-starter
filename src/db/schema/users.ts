@@ -1,4 +1,5 @@
 import {
+  boolean,
   date,
   index,
   pgTable,
@@ -13,15 +14,18 @@ export const users = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     email: varchar("email", { length: 255 }).notNull().unique(),
+    emailVerified: boolean("email_verified").default(false).notNull(),
     username: varchar("username", { length: 50 }).notNull().unique(),
-    firstName: varchar("first_name", { length: 100 }),
-    lastName: varchar("last_name", { length: 100 }),
+    name: varchar("name", { length: 255 }),
     phone: varchar("phone", { length: 20 }),
     birthDate: date("birth_date"),
     bio: text("bio"),
-    image: varchar("image"),
+    image: text("image"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
   },
   (table) => [
     index("idx_users_email").on(table.email),
